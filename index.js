@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
 const JSONStream = require("JSONStream");
-const es = require("event-stream");
 
 const app = express();
 
@@ -37,6 +36,16 @@ fs.createReadStream("pics.json", { encoding: "utf8" }).pipe(
 
 app.get("/", (req, res) => {
   res.render("index", { pics });
+});
+
+app.get("*.json", (req, res) => {
+  if (req.path === "/.json") {
+    res.send(pics);
+  } else {
+    const id = req.path.match(/\d/)[0];
+    const pic = pics.find(el => el.id == id);
+    res.send(pic);
+  }
 });
 
 app.get("/:id", verifyPic, (req, res) => {
