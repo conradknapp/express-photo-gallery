@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
+const JSONStream = require("JSONStream");
+const es = require("event-stream");
 
 const app = express();
 
@@ -19,13 +21,19 @@ const verifyPic = (req, res, next) => {
 
 let pics = [];
 
-fs.readFile("pics.json", { encoding: "utf8" }, (err, data) => {
-  if (err) console.error(err);
-
-  JSON.parse(data).map(pic => {
+fs.createReadStream("pics.json", { encoding: "utf8" }).pipe(
+  JSONStream.parse("*", pic => {
     pics = [...pics, pic];
-  });
-});
+  })
+);
+
+// fs.readFile("pics.json", { encoding: "utf8" }, (err, data) => {
+//   if (err) console.error(err);
+
+//   JSON.parse(data).map(pic => {
+//     pics = [...pics, pic];
+//   });
+// });
 
 app.get("/", (req, res) => {
   res.render("index", { pics });

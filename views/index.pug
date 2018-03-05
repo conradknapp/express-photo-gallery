@@ -12,6 +12,5 @@ html(lang="en")
           img(src= pic.thumbnailUrl alt= pic.title)
           div
             h1
-              a(href= pic.id)= pic.albumTitle
-                span= pic.id
+              a(href= pic.id) #{pic.albumTitle} #{pic.id}
               p= pic.title
